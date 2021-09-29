@@ -32,40 +32,6 @@ void sendGameVars(json &msg){
     msg.at("str") = "Joey Gorski"; // Your author name(s) here
 }
 
-/**
- * @brief Parses the messageType, then calls the appropriate function. 
- * 
- * @param clientID The current AI's ID.
- * @param msg Contains which action to take.
- *      json msg = {
- *          {"messageType", "placeShip"}
- *      }
- */
-void messageHandler(json &msg, string &clientID){
-    if(msg.at("messageType")=="setupGame"){
-        msg.at("client") = clientID;
-        sendGameVars(msg);
-        wipeBoards();   //populate boards with nothing
-    }else if(msg.at("messageType")=="matchOver"){
-        msg.at("client") = clientID;
-        wipeBoards();   //clear the boards after each round
-    }else if(msg.at("messageType")=="placeShip"){
-        msg.at("client") = clientID;
-        placeShip(msg);
-    }else if(msg.at("messageType")=="shootShot"){
-        msg.at("client") = clientID;
-        shootShot(msg);
-    }else if (msg.at("messageType")=="shotReturn"){ 
-        shotReturned(msg);
-    }else if(msg.at("messageType")=="shipDied"){ 
-        //char board[10][10], int row, int col, int length, Direction dir, char newChar
-        updateBoard(gameVars.shipBoard, msg.at("row"), msg.at("col"), msg.at("length"), msg.at("dir"), KILL);
-    }else if (msg.at("messageType")=="killedShip"){ 
-        //char board[10][10], int row, int col, int length, Direction dir, char newChar
-        updateBoard(gameVars.shotBoard, msg.at("row"), msg.at("col"), msg.at("length"), msg.at("dir"), KILL);
-    }
-    
-}
 
 /**
  * @brief Fills the shipBoard and the shotBoard with WATER.
@@ -156,4 +122,39 @@ void shotReturned(json &msg){
         // do nothing
         // unless...?
     }
+}
+
+/**
+ * @brief Parses the messageType, then calls the appropriate function. 
+ * 
+ * @param clientID The current AI's ID.
+ * @param msg Contains which action to take.
+ *      json msg = {
+ *          {"messageType", "placeShip"}
+ *      }
+ */
+void messageHandler(json &msg, string &clientID){
+    if(msg.at("messageType")=="setupGame"){
+        msg.at("client") = clientID;
+        sendGameVars(msg);
+        wipeBoards();   //populate boards with nothing
+    }else if(msg.at("messageType")=="matchOver"){
+        msg.at("client") = clientID;
+        wipeBoards();   //clear the boards after each round
+    }else if(msg.at("messageType")=="placeShip"){
+        msg.at("client") = clientID;
+        placeShip(msg);
+    }else if(msg.at("messageType")=="shootShot"){
+        msg.at("client") = clientID;
+        shootShot(msg);
+    }else if (msg.at("messageType")=="shotReturn"){ 
+        shotReturned(msg);
+    }else if(msg.at("messageType")=="shipDied"){ 
+        //char board[10][10], int row, int col, int length, Direction dir, char newChar
+        updateBoard(gameVars.shipBoard, msg.at("row"), msg.at("col"), msg.at("length"), msg.at("dir"), KILL);
+    }else if (msg.at("messageType")=="killedShip"){ 
+        //char board[10][10], int row, int col, int length, Direction dir, char newChar
+        updateBoard(gameVars.shotBoard, msg.at("row"), msg.at("col"), msg.at("length"), msg.at("dir"), KILL);
+    }
+    
 }

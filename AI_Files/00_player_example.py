@@ -32,6 +32,7 @@ gameVars = {
     "shotBoard": [],
 }
 
+# DO NOT MODIFY THIS FUNCTION
 def updateBoard(board, row, col, length, direction, newChar):
     if direction == HORIZONTAL:
         for len in range(length):
@@ -42,7 +43,21 @@ def updateBoard(board, row, col, length, direction, newChar):
     elif direction == NONE:
         gameVars[board][row][col] = newChar
 
+# /**
+#  * @brief Happens at the beginning of the battleships game only happens once (in 500 matches it only occurs once).
+#  * 
+#  * @param msg Used to give you the boardsize and for you to give your author name in response.
+#  *      json msg = {
+#  *          {"str", "10"}
+#  *      }
+#  */
+def sendGameVars(msg):
+    gameVars["boardSize"] = int(msg["str"])
+    msg["str"] = "Matthew Bouch"
 
+# /**
+#  * @brief Fills the shipBoard and the shotBoard with WATER.
+#  */
 def wipeBoards():
     array = []
     gameVars["shipBoard"]=[]
@@ -54,12 +69,17 @@ def wipeBoards():
         gameVars["shotBoard"].append(copy.deepcopy(array))
     return
 
-
-def sendGameVars(msg):
-    gameVars["boardSize"] = int(msg["str"])
-    msg["str"] = "Matthew Bouch"
-
-
+# /**
+#  * @brief The ship placement logic.
+#  * 
+#  * @param msg Contains the length of the ship, and must have the row, col, and dir be returned.
+#  *      json msg = {
+#  *          {"row", 0},
+#  *          {"col", 0},
+#  *          {"dir", HORIZONTAL},
+#  *          {"length", 4}
+#  *      }
+#  */
 def placeShip(msg): # This is an extremely bad-to-use algorithm in the long term--for more reasons than just the obvious one. Try writing your own from scratch.
     for row in range(gameVars["boardSize"]-msg["length"]):
         for col in range(gameVars["boardSize"]-msg["length"]):
@@ -75,7 +95,15 @@ def placeShip(msg): # This is an extremely bad-to-use algorithm in the long term
                 updateBoard("shipBoard", row, col, msg["length"], HORIZONTAL, SHIP)
                 return
 
-
+# /**
+#  * @brief The shot taking logic.
+#  * 
+#  * @param msg Must have the row and col be returned.
+#  *      json msg = {
+#  *          {"row", 0},
+#  *          {"col", 0}
+#  *      }
+#  */
 def shootShot(msg):
     for row in range(0, gameVars["boardSize"]):
        for col in range(0, gameVars["boardSize"]):
@@ -85,7 +113,17 @@ def shootShot(msg):
                updateBoard("shotBoard", row, col, 1, NONE, SHOT)
                return
         
-
+# /**
+#  * @brief shotReturned is called when there is a shot taken from either AI.
+#  * 
+#  * @param msg Contains the result of a shot at a specified row and col. Client is the AI who took the shot.
+#  *      json msg = {
+#  *          {"row", 0},
+#  *          {"col", 0},
+#  *          {"str", "HIT"},
+#  *          {"client", "1234"}
+#  *      }
+#  */
 def shotReturned(msg):
     # if(msg["client"]==clientID): # this is your AI's shot
         # do something
@@ -94,9 +132,15 @@ def shotReturned(msg):
         # unless...?
     pass
 
-
-
-
+# /**
+#  * @brief Parses the messageType, then calls the appropriate function. 
+#  * 
+#  * @param clientID The current AI's ID.
+#  * @param msg Contains which action to take.
+#  *      json msg = {
+#  *          {"messageType", "placeShip"}
+#  *      }
+#  */
 def messageHandler(msg, clientID):
     if(msg["messageType"] == "setupGame"):
         msg["client"]=clientID
@@ -123,7 +167,7 @@ def messageHandler(msg, clientID):
 
 
 
-
+# DO NOT MODIFY THIS FUNCTION
 def main():
     global clientID
     
@@ -163,5 +207,6 @@ def main():
         #break
     sock.close()
 
+# DO NOT MODIFY THIS STATEMENT
 if __name__ == "__main__":
     main()
