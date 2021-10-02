@@ -945,22 +945,48 @@ bool performAction(string messageType, fd_set &readfds, int &master_socket, int 
                 }
                 string temp(1, shotReturnValue); // converts char to string of size 1
                 msg.at("str") = temp;
-                //communicate the shotReturnValue to both clients
-                performAction("shotReturn", readfds, master_socket, max_sd, client_socket[0],
-                    countConnected, msg, shipLengths, buffer, activity,
-                    address, addrlen, client_socket, dConnect, c,
-                    valread, clientStr, clientResponse, "client1",
-                    c1Board, c2Board, c1ShipBoard, c2ShipBoard, boardSize, totalGameRound,
-                    c1Ships, c2Ships); // we have c in this function call bad for now
 
-                string temp2(1, shotReturnValue); // converts char to string of size 1
-                msg.at("str") = temp2;
-                performAction("shotReturn", readfds, master_socket, max_sd, client_socket[1],
-                    countConnected, msg, shipLengths, buffer, activity,
-                    address, addrlen, client_socket, dConnect, c,
-                    valread, clientStr, clientResponse, "client2",
-                    c1Board, c2Board, c1ShipBoard, c2ShipBoard, boardSize, totalGameRound,
-                    c1Ships, c2Ships); // we have c in this function call bad for now
+                if(currentClient == "client1"){
+                    string garbage = msg.at("client");
+                    msg.at("client") = garbage;
+                    //communicate the shotReturnValue to both clients
+                    performAction("shotReturn", readfds, master_socket, max_sd, client_socket[0],
+                        countConnected, msg, shipLengths, buffer, activity,
+                        address, addrlen, client_socket, dConnect, c,
+                        valread, clientStr, clientResponse, "client1",
+                        c1Board, c2Board, c1ShipBoard, c2ShipBoard, boardSize, totalGameRound,
+                        c1Ships, c2Ships); // we have c in this function call bad for now
+
+                    string temp2(1, shotReturnValue); // converts char to string of size 1
+                    msg.at("str") = temp2;
+                    msg.at("client") = "-2";
+                    performAction("shotReturn", readfds, master_socket, max_sd, client_socket[1],
+                        countConnected, msg, shipLengths, buffer, activity,
+                        address, addrlen, client_socket, dConnect, c,
+                        valread, clientStr, clientResponse, "client2",
+                        c1Board, c2Board, c1ShipBoard, c2ShipBoard, boardSize, totalGameRound,
+                        c1Ships, c2Ships); // we have c in this function call bad for now
+                } else if(currentClient == "client2"){
+                    string garbage = msg.at("client");
+                    msg.at("client") = "-2";
+                    //communicate the shotReturnValue to both clients
+                    performAction("shotReturn", readfds, master_socket, max_sd, client_socket[0],
+                        countConnected, msg, shipLengths, buffer, activity,
+                        address, addrlen, client_socket, dConnect, c,
+                        valread, clientStr, clientResponse, "client1",
+                        c1Board, c2Board, c1ShipBoard, c2ShipBoard, boardSize, totalGameRound,
+                        c1Ships, c2Ships); // we have c in this function call bad for now
+
+                    string temp2(1, shotReturnValue); // converts char to string of size 1
+                    msg.at("str") = temp2;
+                    msg.at("client") = garbage;
+                    performAction("shotReturn", readfds, master_socket, max_sd, client_socket[1],
+                        countConnected, msg, shipLengths, buffer, activity,
+                        address, addrlen, client_socket, dConnect, c,
+                        valread, clientStr, clientResponse, "client2",
+                        c1Board, c2Board, c1ShipBoard, c2ShipBoard, boardSize, totalGameRound,
+                        c1Ships, c2Ships); // we have c in this function call bad for now
+                }
             }
 
             if(msg.at("messageType")!="matchOver"){
