@@ -902,7 +902,11 @@ bool performAction(string messageType, fd_set &readfds, int &master_socket, int 
             return true;
         }else{
             //this else statement is where the data is processed for the game
-            childParse(clientStr, clientResponse, valread, buffer);
+            try{ // if childParse doesn't succeed, kill the game.
+                childParse(clientStr, clientResponse, valread, buffer);
+            }catch(...){
+                return false;
+            }
 
             // Set json data here.
             msg.at("client") = clientResponse.at("client");
@@ -1183,7 +1187,11 @@ bool sendReceive(Player &player, fd_set &readfds, int &master_socket, int &max_s
         }else{
             //this else statement is where the data is processed for the game
             string temp="";
-            childParse(temp, msg, valread, buffer);
+            try{ // if childParse doesn't succeed, kill the game.
+                childParse(temp, msg, valread, buffer);
+            }catch(...){
+                return false;
+            }
 
             // get the authors from str
             player.author = msg.at("str");
