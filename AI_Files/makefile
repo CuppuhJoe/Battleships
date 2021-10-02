@@ -1,20 +1,15 @@
 CXXFLAGS	= -std=c++11 -Wall -O3
 MAKEFLAGS	+= --silent
 
-SRCS = $(wildcard *.cpp)
-PROGS = $(patsubst %.cpp, %, $(SRCS))
+# CPP_SRCS = $(wildcard *.cpp)
+# CPP_PROGS = $(patsubst %.cpp, %, $(CPP_SRCS))
 
-all: $(PROGS)
-	echo "mv *.ai ../AI_Executables"
-	echo "cp *.py ../AI_Executables"
-	mv *.ai ../AI_Executables
-	cp *.py ../AI_Executables
+all: #$(CPP_PROGS)
+	bash ./handle_ai.sh
 
-%: %.cpp
-	echo "$(CXX) $(CXXFLAGS) $(CFLAGS) -o $@.ai $<"
-	$(CXX) $(CXXFLAGS) $(CFLAGS) -o $@.ai $<
-
-
+# %: %.cpp
+# 	echo "$(CXX) $(CXXFLAGS) $(CFLAGS) -o $@.ai $<"
+# 	$(CXX) $(CXXFLAGS) $(CFLAGS) -o $@.ai $<
 
 
 

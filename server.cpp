@@ -911,6 +911,9 @@ bool performAction(string messageType, fd_set &readfds, int &master_socket, int 
             msg.at("dir") = clientResponse.at("dir");
             msg.at("str") = clientResponse.at("str");
 
+            if(clientResponse.at("length") != msg.at("length")){
+                return false;
+            }
 
             /*
             Depending on which client we have passed to this function we go into their if statement and procede to call our
@@ -921,7 +924,7 @@ bool performAction(string messageType, fd_set &readfds, int &master_socket, int 
 
             if(currentClient=="client1"){
                 if(messageType=="placeShip"){
-                    c1Ships[totalGameRound-1]=clientResponse;
+                    c1Ships[totalGameRound-1]=msg;
                     return placeShip(c1Board, c1ShipBoard, boardSize, msg.at("row"), msg.at("col"), msg.at("length"), msg.at("dir"), msg, c1Ships);
                 }else if(messageType=="shootShot"){
                     int tempRow = msg.at("row");
@@ -930,7 +933,7 @@ bool performAction(string messageType, fd_set &readfds, int &master_socket, int 
                 }
             }else if(currentClient=="client2"){
                 if(messageType=="placeShip"){
-                    c2Ships[totalGameRound-1]=clientResponse;
+                    c2Ships[totalGameRound-1]=msg;
                     return placeShip(c2Board, c2ShipBoard, boardSize, msg.at("row"), msg.at("col"), msg.at("length"), msg.at("dir"), msg, c2Ships);
                 }else if(messageType=="shootShot"){
                     int tempRow = msg.at("row");
