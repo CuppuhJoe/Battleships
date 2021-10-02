@@ -111,7 +111,7 @@ void shootShot(json &msg){
  *      json msg = {
  *          {"row", 0},
  *          {"col", 0},
- *          {"str", "HIT"},
+ *          {"str", HIT},
  *          {"client", "1234"}
  *      }
  */
