@@ -340,6 +340,16 @@ GameInfo runMatch(Player player1, Player player2, int boardSize, int master_sock
                 valread, clientStr, clientResponse, "client1",
                 c1Board, c2Board, c1ShipBoard, c2ShipBoard, boardSize, totalGameRound,
                 c1Ships, c2Ships);
+            msg = {
+                {"messageType", "placeShip"},
+                {"row", -1},
+                {"col", -1},
+                {"str", ""},
+                {"dir", NONE},
+                {"length", 3},
+                {"client", "none"},
+                {"count", 0}
+            };
             p2Result = performAction("placeShip", readfds, master_socket, max_sd, client_socket[1],
                 countConnected, msg, shipLengths, buffer, activity,
                 address, addrlen, client_socket, dConnect, c2,
@@ -391,6 +401,17 @@ GameInfo runMatch(Player player1, Player player2, int boardSize, int master_sock
                 {"dir", msg.at("dir")},
                 {"length", msg.at("length")},
                 {"client", msg.at("client")}
+            };
+
+            msg = {
+                {"messageType", "shootShot"},
+                {"row", -1},
+                {"col", -1},
+                {"str", ""},
+                {"dir", NONE},
+                {"length", 3},
+                {"client", "none"},
+                {"count", 0}
             }; 
                 
             p2Result = performAction("shootShot", readfds, master_socket, max_sd, client_socket[1],
@@ -1023,7 +1044,7 @@ bool placeShip(char board[10][10], char shipBoard[10][10], int boardSize, int ro
     }else if(dir==VERTICAL){
         for(int len=0;len<length;len++){
             if(board[row+len][col]!=WATER){
-                cerr << "Ship placement error: VERTICAL" << endl;
+                cerr << "Ship placement error: VERTICAL " << endl;
                 board[row+len][col] = 'E';
                 return false;
             }
