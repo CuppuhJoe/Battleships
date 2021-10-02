@@ -69,8 +69,10 @@ int main(int argc, char *argv[]){
 
     // Handle Config file:
     bool configBool = false;
-    if(strcmp(argv[1], "-c") == 0){
-        configBool = true;
+    if (argc > 1){
+        if(strcmp(argv[1], "-c") == 0){
+            configBool = true;
+        }
     }
     line = "";
     int tracker = 0;
