@@ -12,6 +12,10 @@ make all
 ```
 ./controller
 ```
+Or with configs 
+```
+./controller -c ./Configs/defaults.txt
+```
 4. Follow the prompts to run the game, start a contest file's creation, or replay a previous game. 
 
 ## Making a New AI
