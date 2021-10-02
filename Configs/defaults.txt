@@ -1,0 +1,17 @@
+# If line has hashtag in front of it then it won't be read put the value you want after line for it to read. Use config with -c defaults.txt
+# What do you want to run? [(1:test), 2:competition, 3:replay]
+1
+# How many games should the AI play? (default: 500)
+500
+# What size should the board be? (default: 10)
+10
+# Watch all recorded games or only the last? [(1:last), 2:all, 3:none] 
+1
+# Should the game run via time delay or directed input? [(1:delay), 2:input] 
+1
+# How long should the delay between actions be? (default: 0.3)
+0.3
+# AI 1
+00_player_example.py
+# AI 2
+00_player_example.ai

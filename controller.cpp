@@ -17,7 +17,7 @@ using namespace std;
 using namespace subprocess;
 
 
-int main(){
+int main(int argc, char *argv[]){
     int waste=0;
 
     time_t t1;
@@ -67,82 +67,130 @@ int main(){
     int aiChoiceOne = -1;
     int aiChoiceTwo = -1;
 
-    do{
-        cout << "What do you want to run? [(1:test), 2:competition, 3:replay] ";
-        getline(cin, gameType);
-    }while (gameType!="1" && gameType!="2" && gameType!="3" && gameType!="");
+    // Handle Config file:
+    bool configBool = false;
+    if(strcmp(argv[1], "-c") == 0){
+        configBool = true;
+    }
+    line = "";
+    int tracker = 0;
+    if(configBool){
+        ifstream conf_file (argv[2]);
+        if (conf_file.is_open()) {
+            while ( getline (conf_file,line) ) {
+                if(line[0] != '#'){
+                    if(tracker == 0){
+                        gameType = line;
+                    } else if(tracker == 1){
+                        numGames = stoi(line);
+                    } else if(tracker == 2){
+                        boardSize = stoi(line);
+                    } else if(tracker == 3){
+                        watchAll = stoi(line);
+                    } else if(tracker == 4){
+                        runChoice = stoi(line);
+                    } else if(tracker == 5){
+                        delay = stod(line);
+                    } else if(tracker == 6){
+                        for(int i=0; i<size; i++){
+                            if(strcmp(players[i].name.c_str(), line.c_str()) == 0){
+                                aiChoiceOne = i;
+                                break;
+                            }
+                        }
+                    } else if(tracker == 7){
+                        for(int i=0; i<size; i++){
+                            if(strcmp(players[i].name.c_str(), line.c_str()) == 0){
+                                aiChoiceTwo = i;
+                            }
+                        }
+                    }
+                    tracker++;
+                }
+            }
+            conf_file.close();
+        }
+    }
+
+    if(configBool == false){
+        do{
+            cout << "What do you want to run? [(1:test), 2:competition, 3:replay] ";
+            getline(cin, gameType);
+        }while (gameType!="1" && gameType!="2" && gameType!="3" && gameType!="");
+    }
     
     if(gameType == "1" || gameType == ""){
-        //if 2 player ask for the starting values
-                // - flow or stutter step games
-                // - which AIs will battle
-        
-        cout << "How many games should the AI play? (default: 500) ";
-        getline(cin, temp);
-        if (regex_match(temp, int_expr)){
-            numGames = stoi(temp);    
-        }else if(temp != ""){
-            cout << "The default value will be used." << endl;
-        }
-
-        cout << "What size should the board be? (default: 10) "; // Maybe force value of boardSize to be in range 7-10
-        getline(cin, temp);
-        if (regex_match(temp, int_expr)){
-            boardSize = stoi(temp);    
-        }else if(temp != ""){
-            cout << "The default value will be used." << endl;
-        }
-        
-        cout << "Watch all recorded games or only the last? [(1:last), 2:all, 3:none] ";
-        getline(cin, temp);
-        if (regex_match(temp, int_expr)){
-            watchAll = stoi(temp);    
-        }else if(temp != ""){
-            cout << "The default value will be used." << endl;
-        }
-
-        if(watchAll!=3){
-            cout << "Should the game run via time delay or directed input? [(1:delay), 2:input] ";
+        if(configBool == false) {
+            //if 2 player ask for the starting values
+                    // - flow or stutter step games
+                    // - which AIs will battle
+            
+            cout << "How many games should the AI play? (default: 500) ";
             getline(cin, temp);
             if (regex_match(temp, int_expr)){
-                runChoice = stoi(temp);    
+                numGames = stoi(temp);    
             }else if(temp != ""){
                 cout << "The default value will be used." << endl;
             }
 
-            if (runChoice == 1){
-                cout << "How long should the delay between actions be? (default: 0.3) ";
+            cout << "What size should the board be? (default: 10) "; // Maybe force value of boardSize to be in range 7-10
+            getline(cin, temp);
+            if (regex_match(temp, int_expr)){
+                boardSize = stoi(temp);    
+            }else if(temp != ""){
+                cout << "The default value will be used." << endl;
+            }
+            
+            cout << "Watch all recorded games or only the last? [(1:last), 2:all, 3:none] ";
+            getline(cin, temp);
+            if (regex_match(temp, int_expr)){
+                watchAll = stoi(temp);    
+            }else if(temp != ""){
+                cout << "The default value will be used." << endl;
+            }
+
+            if(watchAll!=3){
+                cout << "Should the game run via time delay or directed input? [(1:delay), 2:input] ";
                 getline(cin, temp);
-                if (regex_match(temp, doub_expr) || regex_match(temp, int_expr)){
-                    delay = stod(temp);    
+                if (regex_match(temp, int_expr)){
+                    runChoice = stoi(temp);    
                 }else if(temp != ""){
                     cout << "The default value will be used." << endl;
                 }
-                cout << "delay: " << delay << endl;
+
+                if (runChoice == 1){
+                    cout << "How long should the delay between actions be? (default: 0.3) ";
+                    getline(cin, temp);
+                    if (regex_match(temp, doub_expr) || regex_match(temp, int_expr)){
+                        delay = stod(temp);    
+                    }else if(temp != ""){
+                        cout << "The default value will be used." << endl;
+                    }
+                }
             }
+            
+            
+            cout << endl;
+            for(int i=0;i<size;i++){
+                cout << "[" << i << "] " << players[i].name << endl;
+            }
+            do{
+                cout << endl << "Choose an AI to battle: ";
+                getline(cin, temp);
+                if (regex_match(temp, int_expr) && (stoi(temp)>=0 && stoi(temp)<size)){
+                    aiChoiceOne = stoi(temp);    
+                }
+            }while(aiChoiceOne == -1);
+            
+            do{
+                cout << "Choose another AI to battle: ";
+                getline(cin, temp);
+                if (regex_match(temp, int_expr) && (stoi(temp)>=0 && stoi(temp)<size)){
+                    aiChoiceTwo = stoi(temp);    
+                }
+            }while(aiChoiceTwo == -1 || aiChoiceTwo == aiChoiceOne);
+            cout << endl;
         }
-        
-        
-        cout << endl;
-        for(int i=0;i<size;i++){
-            cout << "[" << i << "] " << players[i].name << endl;
-        }
-        do{
-            cout << endl << "Choose an AI to battle: ";
-            getline(cin, temp);
-            if (regex_match(temp, int_expr) && (stoi(temp)>=0 && stoi(temp)<size)){
-                aiChoiceOne = stoi(temp);    
-            }
-        }while(aiChoiceOne == -1);
-        
-        do{
-            cout << "Choose another AI to battle: ";
-            getline(cin, temp);
-            if (regex_match(temp, int_expr) && (stoi(temp)>=0 && stoi(temp)<size)){
-                aiChoiceTwo = stoi(temp);    
-            }
-        }while(aiChoiceTwo == -1 || aiChoiceTwo == aiChoiceOne);
-        
 
         string clientNameOne = players[aiChoiceOne].name;
         string clientNameTwo = players[aiChoiceTwo].name;
@@ -157,7 +205,7 @@ int main(){
         waste=system((touch + matchFile).c_str());
 
         //start game
-        cout << endl << "Running..." << endl;
+        cout << "Running..." << endl;
 
         time(&t1);
         waste = runGame(numGames, players[aiChoiceOne], players[aiChoiceTwo], boardSize, matchFile);

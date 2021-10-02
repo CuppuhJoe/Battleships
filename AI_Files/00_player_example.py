@@ -143,18 +143,18 @@ def shotReturned(msg):
 #  */
 def messageHandler(msg, clientID):
     if(msg["messageType"] == "setupGame"):
-        msg["client"]=clientID
+        msg["client"]=str(clientID)
         sendGameVars(msg)
         # Populating boards with blank data
         wipeBoards()
     elif(msg["messageType"] == "matchOver"):
-        msg["client"]=clientID
+        msg["client"]=str(clientID)
         wipeBoards()
     elif(msg["messageType"] == "placeShip"):
-        msg["client"]=clientID
+        msg["client"]=str(clientID)
         placeShip(msg)
     elif(msg["messageType"] == "shootShot"):
-        msg["client"]=clientID
+        msg["client"]=str(clientID)
         shootShot(msg)
     elif(msg["messageType"] == "shotReturn"):
         shotReturned(msg)
