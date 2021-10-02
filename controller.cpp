@@ -83,27 +83,44 @@ int main(int argc, char *argv[]){
                 if(line[0] != '#'){
                     if(tracker == 0){
                         gameType = line;
+                        if(stoi(gameType) != 1 && stoi(gameType) != 2 && stoi(gameType) != 3){
+                            cout << "Invalid gameType provided" << endl;
+                            return 0;
+                        }
                     } else if(tracker == 1){
                         numGames = stoi(line);
                     } else if(tracker == 2){
                         boardSize = stoi(line);
+                        if(boardSize<7 || boardSize>10){
+                            cout << "Invalid boardSize provided. Valid range 7-10." << endl;
+                            return 0;
+                        }
                     } else if(tracker == 3){
                         watchAll = stoi(line);
+                        if(watchAll != 1 && watchAll != 2 && watchAll != 3){
+                            cout << "Invalid watchAll provided" << endl;
+                            return 0;
+                        }
                     } else if(tracker == 4){
                         runChoice = stoi(line);
+                        if(runChoice != 1 && runChoice != 2){
+                            cout << "Invalid runChoice provided" << endl;
+                            return 0;
+                        }
                     } else if(tracker == 5){
                         delay = stod(line);
-                    } else if(tracker == 6){
+                    } else if(tracker == 6){ // error handling is done further down
                         for(int i=0; i<size; i++){
                             if(strcmp(players[i].name.c_str(), line.c_str()) == 0){
                                 aiChoiceOne = i;
                                 break;
                             }
                         }
-                    } else if(tracker == 7){
+                    } else if(tracker == 7){ // error handling is done further down
                         for(int i=0; i<size; i++){
                             if(strcmp(players[i].name.c_str(), line.c_str()) == 0){
                                 aiChoiceTwo = i;
+                                break;
                             }
                         }
                     }
@@ -111,7 +128,21 @@ int main(int argc, char *argv[]){
                 }
             }
             conf_file.close();
+        } else {
+            cout << "Config file doesn't exist" << endl;
+            return 0;
         }
+        if(aiChoiceOne == -1){
+            cout << "AI_One doesn't exist" << endl;
+            return 0;
+        } else if(aiChoiceTwo == -1){
+            cout << "AI_Two doesn't exist" << endl;
+            return 0;
+        } else if (aiChoiceOne == aiChoiceTwo){
+            cout << "Invalid AI choice--AI cannot match" << endl;
+            return 0;
+        }
+
     }
 
     if(configBool == false){
@@ -141,6 +172,10 @@ int main(int argc, char *argv[]){
                 boardSize = stoi(temp);    
             }else if(temp != ""){
                 cout << "The default value will be used." << endl;
+            }
+            if(boardSize < 7 || boardSize > 10){
+                cout << "The default value will be used. Boardsize to small or large. Valid range 7-10." << endl;
+                boardSize = 10;
             }
             
             cout << "Watch all recorded games or only the last? [(1:last), 2:all, 3:none] ";
